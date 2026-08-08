@@ -24,18 +24,22 @@ export default function MessageInput({ philosopherId, onSendMessage, disabled })
 
   return (
     <div style={{
-      padding: '1rem 1.25rem 1.25rem',
-      background: 'rgba(15, 17, 26, 0.85)',
-      backdropFilter: 'blur(16px)',
-      borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+      padding: '0.85rem 1rem 1.1rem',
+      background: 'rgba(15, 17, 26, 0.95)',
+      backdropFilter: 'blur(20px)',
+      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+      flexShrink: 0,
+      position: 'sticky',
+      bottom: 0,
+      zIndex: 20
     }}>
       {/* 추천 질문 칩 */}
       <div style={{
         display: 'flex',
         gap: '8px',
         overflowX: 'auto',
-        paddingBottom: '0.75rem',
-        marginBottom: '0.5rem',
+        paddingBottom: '0.6rem',
+        marginBottom: '0.4rem',
         scrollbarWidth: 'none'
       }}>
         {suggestions.map((q, idx) => (
@@ -51,8 +55,8 @@ export default function MessageInput({ philosopherId, onSendMessage, disabled })
               background: 'rgba(255,255,255,0.06)',
               border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: '16px',
-              padding: '6px 12px',
-              fontSize: '0.775rem',
+              padding: '5px 11px',
+              fontSize: '0.75rem',
               color: 'var(--text-secondary)',
               cursor: disabled ? 'not-allowed' : 'pointer',
               transition: 'all 0.2s',
@@ -68,19 +72,19 @@ export default function MessageInput({ philosopherId, onSendMessage, disabled })
       </div>
 
       {/* 입력 폼 */}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="고민이나 질문을 마음 편히 작성하세요..."
+          placeholder="고민이나 질문을 작성하세요..."
           disabled={disabled}
           style={{
             flex: 1,
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            background: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '14px',
-            padding: '0.85rem 1.15rem',
+            padding: '0.8rem 1rem',
             color: '#ffffff',
             fontSize: '0.95rem',
             outline: 'none',
@@ -96,14 +100,14 @@ export default function MessageInput({ philosopherId, onSendMessage, disabled })
             color: text.trim() && !disabled ? '#111827' : '#6b7280',
             border: 'none',
             borderRadius: '14px',
-            width: '46px',
-            height: '46px',
+            width: '44px',
+            height: '44px',
             display: 'flex',
             alignItems: 'center',
             justify: 'center',
             cursor: text.trim() && !disabled ? 'pointer' : 'not-allowed',
             transition: 'all 0.2s',
-            boxShadow: text.trim() && !disabled ? '0 4px 14px rgba(0,0,0,0.3)' : 'none'
+            flexShrink: 0
           }}
         >
           <Send size={18} />

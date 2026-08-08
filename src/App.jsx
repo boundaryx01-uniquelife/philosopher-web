@@ -56,7 +56,6 @@ export default function App() {
     setMessages(updatedMessages);
     setIsThinking(true);
 
-    // AI 스트리밍 대답 빈 메시지 틀 우선 추가
     const aiMsgIndex = updatedMessages.length;
     let accumulatedContent = '';
     let currentRetrievedContext = [];
@@ -66,11 +65,9 @@ export default function App() {
         selectedPhilosopher.id,
         text,
         historyForBackend,
-        // 1. RAG 메타데이터 수신 시
         (retrieved_context) => {
           currentRetrievedContext = retrieved_context;
         },
-        // 2. 글자 조각(Chunk) 실시간 수신 시 (0.5초 만에 작동)
         (chunkText) => {
           setIsThinking(false);
           accumulatedContent += chunkText;
@@ -97,27 +94,38 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <div style={{ 
+      height: '100dvh', 
+      maxHeight: '100dvh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
       <div className="ambient-bg" />
 
       {!selectedPhilosopher ? (
-        <PhilosopherSelector
-          philosophers={philosophers}
-          onSelectPhilosopher={(phil) => {
-            setSelectedPhilosopher(phil);
-            setMessages([]);
-          }}
-        />
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <PhilosopherSelector
+            philosophers={philosophers}
+            onSelectPhilosopher={(phil) => {
+              setSelectedPhilosopher(phil);
+              setMessages([]);
+            }}
+          />
+        </div>
       ) : (
         <div style={{
           maxWidth: '840px',
           width: '100%',
-          height: '100vh',
+          height: '100dvh',
+          maxHeight: '100dvh',
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          zIndex: 1
+          zIndex: 1,
+          overflow: 'hidden'
         }}>
           <ChatHeader
             philosopher={selectedPhilosopher}

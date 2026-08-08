@@ -4,9 +4,8 @@ import ChatHeader from './components/ChatHeader';
 import MessageList from './components/MessageList';
 import MessageInput from './components/MessageInput';
 import ContextModal from './components/ContextModal';
-import { fetchPhilosophers, sendChatMessage } from './services/api';
+import { fetchPhilosophers, sendChatMessageStream } from './services/api';
 
-// 기본 5인 철학자 백업 폴백 (서버 연결 전 초기 상태용)
 const DEFAULT_PHILOSOPHERS = [
   { id: 'nietzsche', name: '프리드리히 니체', description: '운명을 사랑하고 고통을 극복하는 강인한 초인의 삶을 이야기합니다.' },
   { id: 'schopenhauer', name: '아르투어 쇼펜하우어', description: '삶의 고통을 직시하고, 고독의 가치와 냉철한 현실을 바라보게 합니다.' },
@@ -22,18 +21,16 @@ export default function App() {
   const [isThinking, setIsThinking] = useState(false);
   const [activeContext, setActiveContext] = useState(null);
 
-  // 서버에서 지원 철학자 로드
   useEffect(() => {
     fetchPhilosophers()
       .then(data => {
         if (data && data.length > 0) setPhilosophers(data);
       })
       .catch(err => {
-        console.warn('Backend API connects via fallback default list:', err);
+        console.warn('Backend API connects via fallback list:', err);
       });
   }, []);
 
-  // 선택된 철학자에 따라 앰비언트 테마 변경
   useEffect(() => {
     if (selectedPhilosopher) {
       const themeVarMap = {
@@ -48,44 +45,61 @@ export default function App() {
     }
   }, [selectedPhilosopher]);
 
-  // 메시지 전송 로직
+  // 실시간 스트리밍 타자기 이펙트 메시지 전송 로직
   const handleSendMessage = async (text) => {
     if (!text.trim() || !selectedPhilosopher) return;
 
     const userMsg = { role: 'user', content: text };
+    const historyForBackend = [...messages];
     const updatedMessages = [...messages, userMsg];
+    
     setMessages(updatedMessages);
     setIsThinking(true);
 
-    try {
-      // API 통신 (이전 대화 이력 포함)
-      const data = await sendChatMessage(selectedPhilosopher.id, text, messages);
-      
-      const aiMsg = {
-        role: 'model',
-        content: data.reply,
-        retrieved_context: data.retrieved_context
-      };
+    // AI 스트리밍 대답 빈 메시지 틀 우선 추가
+    const aiMsgIndex = updatedMessages.length;
+    let accumulatedContent = '';
+    let currentRetrievedContext = [];
 
-      setMessages([...updatedMessages, aiMsg]);
+    try {
+      await sendChatMessageStream(
+        selectedPhilosopher.id,
+        text,
+        historyForBackend,
+        // 1. RAG 메타데이터 수신 시
+        (retrieved_context) => {
+          currentRetrievedContext = retrieved_context;
+        },
+        // 2. 글자 조각(Chunk) 실시간 수신 시 (0.5초 만에 작동)
+        (chunkText) => {
+          setIsThinking(false);
+          accumulatedContent += chunkText;
+          setMessages(prev => {
+            const next = [...prev];
+            next[aiMsgIndex] = {
+              role: 'model',
+              content: accumulatedContent,
+              retrieved_context: currentRetrievedContext
+            };
+            return next;
+          });
+        }
+      );
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Streaming chat error:', error);
+      setIsThinking(false);
       const errorMsg = {
         role: 'model',
         content: `[오류] 대화를 나누는 중 에러가 발생했습니다: ${error.message}\n백엔드 API 서버가 실행 중인지 확인해 주세요.`
       };
       setMessages([...updatedMessages, errorMsg]);
-    } finally {
-      setIsThinking(false);
     }
   };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-      {/* 앰비언트 배경 글로우 */}
       <div className="ambient-bg" />
 
-      {/* 1. 철학자 선택 화면 */}
       {!selectedPhilosopher ? (
         <PhilosopherSelector
           philosophers={philosophers}
@@ -95,7 +109,6 @@ export default function App() {
           }}
         />
       ) : (
-        /* 2. 대화형 채팅 화면 */
         <div style={{
           maxWidth: '840px',
           width: '100%',
@@ -127,7 +140,6 @@ export default function App() {
         </div>
       )}
 
-      {/* RAG 원문 구절 팝업 모달 */}
       {activeContext && (
         <ContextModal
           contexts={activeContext}

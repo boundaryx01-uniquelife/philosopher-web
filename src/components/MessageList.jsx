@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { BookOpen, User, Bot, Sparkles } from 'lucide-react';
+import { BookOpen, User, Bot, Sparkles, Heart } from 'lucide-react';
 
 export default function MessageList({ messages, isThinking, philosopher, onViewContext }) {
   const messagesEndRef = useRef(null);
@@ -36,7 +36,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
             background: 'var(--active-theme)',
             display: 'flex',
             alignItems: 'center',
-            justify: 'center',
+            justifyContent: 'center',
             margin: '0 auto 1rem',
             fontSize: '1.75rem',
             color: '#111827',
@@ -46,10 +46,10 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
             {philosopher.name[0]}
           </div>
           <h3 style={{ fontSize: '1.3rem', color: '#ffffff', marginBottom: '0.5rem', fontWeight: 700 }}>
-            {philosopher.name}와의 사색에 오신 것을 환영합니다.
+            {philosopher.name}와의 대화
           </h3>
-          <p style={{ fontSize: '0.925rem', maxWidth: '420px', margin: '0 auto', lineHeight: 1.6 }}>
-            어떤 마음의 고민이나 방황이 있으신가요? 편안하게 털어놓으시면, 철학적 지혜를 담아 대답해 드리겠습니다.
+          <p style={{ fontSize: '0.925rem', maxWidth: '440px', margin: '0 auto', lineHeight: 1.6 }}>
+            마음속에 머무는 어떤 이야기든 편안하게 들려주세요. 당신의 감정과 고민을 온전히 마주하며 진심 어린 사색의 대화를 나누겠습니다.
           </p>
         </div>
       )}
@@ -77,7 +77,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
                 color: '#111827',
                 display: 'flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 fontWeight: 700,
                 fontSize: '0.9rem',
                 flexShrink: 0,
@@ -89,13 +89,13 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
 
             {/* 말풍선 버블 */}
             <div style={{
-              maxWidth: '80%',
+              maxWidth: '82%',
               display: 'flex',
               flexDirection: 'column',
               alignItems: isUser ? 'flex-end' : 'flex-start'
             }}>
               <div style={{
-                padding: '0.9rem 1.15rem',
+                padding: '1rem 1.25rem',
                 borderRadius: isUser ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                 background: isUser 
                   ? 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)' 
@@ -103,7 +103,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
                 border: isUser ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
                 color: '#ffffff',
                 fontSize: '0.95rem',
-                lineHeight: 1.6,
+                lineHeight: 1.7,
                 boxShadow: isUser 
                   ? '0 4px 14px rgba(59, 130, 246, 0.3)' 
                   : '0 4px 16px rgba(0, 0, 0, 0.3)',
@@ -147,7 +147,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
                 color: '#ffffff',
                 display: 'flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 flexShrink: 0,
                 marginTop: '4px'
               }}>
@@ -158,7 +158,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
         );
       })}
 
-      {/* 생각하는 중 타이핑 물결 애니메이션 */}
+      {/* 생각하는 중 감성 타이핑 물결 애니메이션 */}
       {isThinking && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="animate-fade-in">
           <div style={{
@@ -169,14 +169,14 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
             color: '#111827',
             display: 'flex',
             alignItems: 'center',
-            justify: 'center',
+            justifyContent: 'center',
             fontWeight: 700,
             fontSize: '0.9rem'
           }}>
             {philosopher.name[0]}
           </div>
           <div style={{
-            padding: '0.75rem 1.1rem',
+            padding: '0.8rem 1.15rem',
             borderRadius: '18px 18px 18px 4px',
             background: 'rgba(28, 33, 53, 0.85)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -184,10 +184,10 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
             alignItems: 'center',
             gap: '6px',
             color: 'var(--text-secondary)',
-            fontSize: '0.85rem'
+            fontSize: '0.875rem'
           }}>
             <Sparkles size={14} color="var(--active-theme)" />
-            <span>{philosopher.name}가 고전 원문을 사색하는 중입니다</span>
+            <span>{philosopher.name}가 당신의 마음에 귀 기울이며 깊이 사색하는 중입니다</span>
             <span style={{ display: 'inline-flex', gap: '3px', marginLeft: '4px' }}>
               <span style={{ animation: 'waveDots 1.4s infinite 0s' }}>.</span>
               <span style={{ animation: 'waveDots 1.4s infinite 0.2s' }}>.</span>

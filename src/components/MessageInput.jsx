@@ -92,25 +92,38 @@ export default function MessageInput({ philosopherId, onSendMessage, disabled })
           }}
         />
 
+        {/* 전송 버튼 (완벽한 기하학적 정중앙 정렬) */}
         <button
           type="submit"
           disabled={!text.trim() || disabled}
           style={{
-            background: text.trim() && !disabled ? 'var(--active-theme)' : 'rgba(255,255,255,0.1)',
+            background: text.trim() && !disabled ? 'var(--active-theme)' : 'rgba(255,255,255,0.08)',
             color: text.trim() && !disabled ? '#111827' : '#6b7280',
             border: 'none',
             borderRadius: '14px',
             width: '44px',
             height: '44px',
-            display: 'flex',
-            alignItems: 'center',
-            justify: 'center',
+            minWidth: '44px',
+            minHeight: '44px',
+            padding: 0,
+            margin: 0,
+            display: 'grid',
+            placeItems: 'center',
             cursor: text.trim() && !disabled ? 'pointer' : 'not-allowed',
             transition: 'all 0.2s',
-            flexShrink: 0
+            flexShrink: 0,
+            boxShadow: text.trim() && !disabled ? '0 4px 12px rgba(0,0,0,0.3)' : 'none'
           }}
+          title="메시지 보내기"
         >
-          <Send size={18} />
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transform: 'translate(-1px, 1px)' /* 광학적 중심 보정 */
+          }}>
+            <Send size={19} style={{ display: 'block' }} />
+          </div>
         </button>
       </form>
     </div>

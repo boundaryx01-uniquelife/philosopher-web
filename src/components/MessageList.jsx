@@ -1,8 +1,18 @@
 import React, { useRef, useEffect } from 'react';
-import { BookOpen, User, Bot, Sparkles, Heart } from 'lucide-react';
+import { BookOpen, User, Sparkles, Quote, Feather, HeartHandshake } from 'lucide-react';
+
+const PHILOSOPHER_ICONS = {
+  nietzsche: { icon: Sparkles, color: 'var(--theme-nietzsche)', bg: 'rgba(245, 158, 11, 0.15)', symbolTitle: '극복과 아모르파티' },
+  schopenhauer: { icon: Quote, color: 'var(--theme-schopenhauer)', bg: 'rgba(59, 130, 246, 0.15)', symbolTitle: '고독과 현실 직시' },
+  epictetus: { icon: Feather, color: 'var(--theme-epictetus)', bg: 'rgba(16, 185, 129, 0.15)', symbolTitle: '스토아 평정심' },
+  socrates: { icon: BookOpen, color: 'var(--theme-socrates)', bg: 'rgba(168, 85, 247, 0.15)', symbolTitle: '문답과 성찰' },
+  confucius: { icon: HeartHandshake, color: 'var(--theme-confucius)', bg: 'rgba(234, 179, 8, 0.15)', symbolTitle: '인(仁)과 중용' }
+};
 
 export default function MessageList({ messages, isThinking, philosopher, onViewContext }) {
   const messagesEndRef = useRef(null);
+  const iconData = PHILOSOPHER_ICONS[philosopher.id] || PHILOSOPHER_ICONS.nietzsche;
+  const IconComponent = iconData.icon;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,26 +39,26 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
           padding: '2rem 1rem',
           color: 'var(--text-secondary)'
         }} className="animate-fade-in">
+          {/* 중앙 상징 아이콘 아바타 */}
           <div style={{
-            width: '64px',
-            height: '64px',
+            width: '68px',
+            height: '68px',
             borderRadius: '20px',
-            background: 'var(--active-theme)',
+            background: iconData.bg,
+            border: `2px solid ${iconData.color}45`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1rem',
-            fontSize: '1.75rem',
-            color: '#111827',
-            fontWeight: 700,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
+            margin: '0 auto 1.25rem',
+            boxShadow: `0 8px 24px ${iconData.color}25`
           }}>
-            {philosopher.name[0]}
+            <IconComponent size={32} color={iconData.color} style={{ display: 'block' }} />
           </div>
-          <h3 style={{ fontSize: '1.3rem', color: '#ffffff', marginBottom: '0.5rem', fontWeight: 700 }}>
+
+          <h3 style={{ fontSize: '1.35rem', color: '#ffffff', marginBottom: '0.5rem', fontWeight: 700, wordBreak: 'keep-all' }}>
             {philosopher.name}와의 대화
           </h3>
-          <p style={{ fontSize: '0.925rem', maxWidth: '440px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '0.925rem', maxWidth: '440px', margin: '0 auto', lineHeight: 1.6, wordBreak: 'keep-all' }}>
             마음속에 머무는 어떤 이야기든 편안하게 들려주세요. 당신의 감정과 고민을 온전히 마주하며 진심 어린 사색의 대화를 나누겠습니다.
           </p>
         </div>
@@ -67,23 +77,21 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
               gap: '0.75rem'
             }}
           >
-            {/* 철학자 프로필 아이콘 */}
+            {/* 철학자 말풍선 아바타 아이콘 */}
             {!isUser && (
               <div style={{
                 width: '36px',
                 height: '36px',
-                borderRadius: '10px',
-                background: 'var(--active-theme)',
-                color: '#111827',
+                borderRadius: '11px',
+                background: iconData.bg,
+                border: `1px solid ${iconData.color}35`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '0.9rem',
                 flexShrink: 0,
                 marginTop: '4px'
               }}>
-                {philosopher.name[0]}
+                <IconComponent size={18} color={iconData.color} style={{ display: 'block' }} />
               </div>
             )}
 
@@ -107,12 +115,13 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
                 boxShadow: isUser 
                   ? '0 4px 14px rgba(59, 130, 246, 0.3)' 
                   : '0 4px 16px rgba(0, 0, 0, 0.3)',
-                whiteSpace: 'pre-wrap'
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'keep-all'
               }}>
                 {msg.content}
               </div>
 
-              {/* RAG 원문 참고 구절 보기 단추 (AI 답변일 때) */}
+              {/* RAG 원문 참고 구절 보기 단추 */}
               {!isUser && msg.retrieved_context && msg.retrieved_context.length > 0 && (
                 <button
                   onClick={() => onViewContext(msg.retrieved_context)}
@@ -142,7 +151,7 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
               <div style={{
                 width: '36px',
                 height: '36px',
-                borderRadius: '10px',
+                borderRadius: '11px',
                 background: 'rgba(255,255,255,0.1)',
                 color: '#ffffff',
                 display: 'flex',
@@ -158,22 +167,21 @@ export default function MessageList({ messages, isThinking, philosopher, onViewC
         );
       })}
 
-      {/* 생각하는 중 감성 타이핑 물결 애니메이션 */}
+      {/* 생각하는 중 사색 타이핑 애니메이션 */}
       {isThinking && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="animate-fade-in">
           <div style={{
             width: '36px',
             height: '36px',
-            borderRadius: '10px',
-            background: 'var(--active-theme)',
-            color: '#111827',
+            borderRadius: '11px',
+            background: iconData.bg,
+            border: `1px solid ${iconData.color}35`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontWeight: 700,
-            fontSize: '0.9rem'
+            flexShrink: 0
           }}>
-            {philosopher.name[0]}
+            <IconComponent size={18} color={iconData.color} style={{ display: 'block' }} />
           </div>
           <div style={{
             padding: '0.8rem 1.15rem',

@@ -36,6 +36,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiasing;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* 커스텀 스크롤바 */
